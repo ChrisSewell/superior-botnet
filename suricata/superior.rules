@@ -1,0 +1,6 @@
+# superior botnet - example Suricata rules (2026-11-17). Syntax-checked with Suricata 7.0.10 (suricata -T); adjust sids for your ruleset.
+# The port rule is limited to one alert per source per 10 minutes.
+alert http $HOME_NET any -> $EXTERNAL_NET 18081 (msg:"superior install telemetry"; flow:to_server,established; http.uri; content:"/s/"; startswith; pcre:"/^\/s\/(arch|fetched|launch)-/"; classtype:trojan-activity; sid:9100001; rev:2;)
+alert http $HOME_NET any -> $EXTERNAL_NET 8099 (msg:"superior dropper beacon"; flow:to_server,established; http.uri; content:"/b/"; startswith; pcre:"/^\/b\/[sbx]\//"; classtype:trojan-activity; sid:9100002; rev:2;)
+alert tcp $HOME_NET any -> $EXTERNAL_NET 29444 (msg:"superior CNC port"; flow:to_server; flags:S; threshold:type limit, track by_src, count 1, seconds 600; classtype:trojan-activity; sid:9100003; rev:2;)
+alert http $HOME_NET any -> $EXTERNAL_NET any (msg:"superior binary fetch"; flow:to_server,established; http.uri; content:"/superior."; classtype:trojan-activity; sid:9100004; rev:2;)

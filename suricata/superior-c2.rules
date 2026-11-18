@@ -1,0 +1,22 @@
+# superior botnet - C2 protocol rules from static analysis of the debug build (2026-11-17).
+# Syntax-checked with Suricata 7 (suricata -T). 9100012 and 9100014 match traffic from a lab run;
+# 9100010, 9100011 and 9100013 have not been seen against live traffic. Adjust sids.
+# Each rule is limited to one alert per source per 10 minutes: a bot opens hundreds of report
+# connections a minute, so unlimited the status-line rule floods (about 5,000 alerts per bot in 11 minutes).
+
+# Registration frame. It is ChaCha20 under a key, nonce and counter that are fixed in the
+# sample, and the plaintext starts 00 00 00 0d, so ciphertext bytes 2..5 are constant on any port.
+# The length prefix must also match the segment size, which keeps false positives down.
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"superior C2 registration frame"; flow:to_server,established; dsize:>50; content:"|a8 31 f0 21|"; offset:2; depth:4; byte_test:2,<,1025,0; byte_jump:2,0; isdataat:!1,relative; threshold:type limit, track by_src, count 1, seconds 600; classtype:trojan-activity; sid:9100010; rev:2;)
+
+# Fallback C2 port (the bot alternates 29444 and 14444 after a failed connect).
+alert tcp $HOME_NET any -> $EXTERNAL_NET 14444 (msg:"superior CNC fallback port"; flow:to_server; flags:S; threshold:type limit, track by_src, count 1, seconds 600; classtype:trojan-activity; sid:9100011; rev:2;)
+
+# Plaintext status lines sent over TCP 5821. Seen firing on live bot traffic in a lab run.
+alert tcp $HOME_NET any -> $EXTERNAL_NET 5821 (msg:"superior status report"; flow:to_server,established; content:"["; depth:1; pcre:"/^\[(BOOT|SYSINFO|SELF|BENCHMARK|ANALYST|SELFREP|ARCH|GEO|KILL|WATCHDOG|CATALOG|BOOK|CNC|SERIAL|ROOT|OPT|SWARM|MESH)\]/"; threshold:type limit, track by_src, count 1, seconds 600; classtype:trojan-activity; sid:9100012; rev:3;)
+
+# C2 domain from the sample's string table.
+alert dns $HOME_NET any -> any any (msg:"superior C2 domain lookup"; dns.query; content:"ilovefemboyssomuch.duckdns.org"; nocase; threshold:type limit, track by_src, count 1, seconds 600; classtype:trojan-activity; sid:9100013; rev:2;)
+
+# Mesh hello: 35 bytes, "SWR1" + version 1, normally to TCP 443 (raw, not TLS). Seen in a lab run.
+alert tcp $HOME_NET any -> any any (msg:"superior mesh hello"; flow:established; dsize:35; content:"SWR1|01|"; depth:5; threshold:type limit, track by_src, count 1, seconds 600; classtype:trojan-activity; sid:9100014; rev:2;)

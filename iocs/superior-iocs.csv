@@ -1,0 +1,30 @@
+type,value,context,first_seen,last_seen
+sha256,5f7494996239fa4768a89f61b6d3cf710b75fb458c099b6c71d7fb7174c09220,superior.arm7 ELF static with debug info (672528 bytes),2026-11-05,2026-11-05
+sha256,f1cd80c989a6c9fc872978c8f2ecf6ed42788a6144e4936f2e2088e3bd77c03a,superior.arm7 ELF static-pie stripped (617848 bytes),2026-11-04,2026-11-04
+sha256,f506dc7d3b0e70329979385d841289003d4f51cb108104ac221d2b36997931a5,superior /s telnet dropper GEN v7 (14168 bytes),2026-11-11,2026-11-11
+sha256,5c9997e23cb38e41d3cb9945ea1f41108275c75c7c1f82004d527038c55b63f7,superior /s telnet dropper (13701 bytes),2026-11-11,2026-11-11
+sha256,c4785aeb2d863ba0f118300737dc3b8d255b79ec4efee29d990b6f6fba70f161,superior /s telnet dropper (12819 bytes),2026-11-11,2026-11-11
+sha256,35cc7669054ba9ee656dc0fb852cad31d856e4bc95a5cf88e4bb58f64129e30f,superior /s telnet dropper (12408 bytes),2026-11-11,2026-11-11
+ip,77.239.124[.]167,payload host + beacon :8099 + CNC tcp/29444; also telnet loader,2026-11-04,2026-11-11
+ip,195.178.110[.]91,install telemetry http :18081,2026-11-11,2026-11-11
+ip,195.178.110[.]78,telnet scanner/loader,2026-11-11,2026-11-17
+ip,217.60.102[.]31,telnet loader,2026-11-04,2026-11-04
+ip_port,77.239.124[.]167:29444,superior CNC,2026-11-11,2026-11-11
+ip_port,77.239.124[.]167:14444,superior CNC fallback port (from binary),,
+ip_port,77.239.124[.]167:5821,plaintext status reports (from binary),,
+domain,ilovefemboyssomuch.duckdns[.]org,C2 domain in string table (from binary),,
+url,hxxp://77.239.124[.]167/s,dropper,2026-11-04,2026-11-11
+url,hxxp://77.239.124[.]167/k/8e61cfee78b940a0/superior.arm7,payload,2026-11-04,2026-11-05
+url,hxxp://77.239.124[.]167/k/a56f1a4933ad0bca/superior.arm7,payload (not captured),2026-11-04,2026-11-04
+url,hxxp://77.239.124[.]167/k/a56f1a4933ad0bca/superior.arm4,payload (not captured),2026-11-04,2026-11-04
+url_pattern,hxxp://77.239.124[.]167:8099/b/{s|b|x}/<hostname>,dropper beacon,2026-11-11,2026-11-11
+url_pattern,hxxp://195.178.110[.]91:18081/s/{arch|fetched|launch}-*,install telemetry,2026-11-11,2026-11-11
+string,SUPERIOR_INSTANCE_GEN,dropper/bot env var,,
+string,# superior-persist begin,crontab marker,,
+path,/data/adb/.swarm_peers,mesh peer cache (Android),,
+path,/data/adb/modules/media_svc/,Magisk/KernelSU persistence module,,
+path,/tmp/.bot_lock,instance lock (lab run),,
+path,/tmp/.swarm_peers,mesh peer cache (lab run),,
+path,/tmp/.hydra_dark,HYDRA dark-mode marker (lab run),,
+path,/tmp/.superior_tmp/,working dir (lab run),,
+string,SWR1,mesh hello magic on tcp/443,,
